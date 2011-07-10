@@ -94,48 +94,34 @@ public class Chronicle extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.camera_menu, menu);
+        if(numberOfCameras <= 1) {
+        	MenuItem mi = menu.findItem(R.id.switch_camera);
+        	mi.setEnabled(false);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle item selection
         switch (item.getItemId()) {
         case R.id.pick_picture:
         	Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         	intent.setType("image/*");
         	startActivityForResult(intent, 0);
-//        case R.id.switch_cam:
-//            // check for availability of multiple cameras
-//            if (numberOfCameras == 1) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setMessage(this.getString(R.string.camera_alert))
-//                       .setNeutralButton("Close", null);
-//                AlertDialog alert = builder.create();
-//                alert.show();
-//                return true;
-//            }
-//
-//            // OK, we have multiple cameras.
-//            // Release this camera -> cameraCurrentlyLocked
-//            if (mCamera != null) {
-//                mCamera.stopPreview();
-//                mPreview.setCamera(null);
-//                mCamera.release();
-//                mCamera = null;
-//            }
-//
-//            // Acquire the next camera and request Preview to reconfigure
-//            // parameters.
-//            mCamera = Camera
-//                    .open((cameraCurrentlyLocked + 1) % numberOfCameras);
-//            cameraCurrentlyLocked = (cameraCurrentlyLocked + 1)
-//                    % numberOfCameras;
-//            mPreview.switchCamera(mCamera);
-//
-//            // Start the preview
-//            mCamera.startPreview();
-//            return true;
+        case R.id.switch_camera:
+            if (mCamera != null) {
+                mCamera.stopPreview();
+                mPreview.setCamera(null);
+                mCamera.release();
+                mCamera = null;
+            }
+            mCamera = Camera
+                    .open((cameraCurrentlyLocked + 1) % numberOfCameras);
+            cameraCurrentlyLocked = (cameraCurrentlyLocked + 1)
+                    % numberOfCameras;
+            mPreview.switchCamera(mCamera);
+            mCamera.startPreview();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -187,7 +173,7 @@ public class Chronicle extends Activity {
  * support preview sizes at the same aspect ratio as the device's display.
  */
 class Preview extends FrameLayout implements SurfaceHolder.Callback {
-    private final String TAG = "Preview";
+    private final String TAG = "Chronicle";
 
     SurfaceView mSurfaceView;
     SurfaceHolder mHolder;
@@ -233,10 +219,12 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
        } catch (IOException exception) {
            Log.e(TAG, "IOException caused by setPreviewDisplay()", exception);
        }
+       if (mSupportedPreviewSizes != null) {
+           mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, getMeasuredWidth(), getMeasuredHeight());
+       }
        Camera.Parameters parameters = camera.getParameters();
        parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
        requestLayout();
-
        camera.setParameters(parameters);
     }
 
@@ -248,7 +236,6 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
         final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
         setMeasuredDimension(width, height);
-
         if (mSupportedPreviewSizes != null) {
             mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
         }
