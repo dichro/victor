@@ -1,16 +1,26 @@
 package to.rcpt.chronicle;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +37,8 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.List;
+
+import to.rcpt.DailySnap.R;
 
 public class Chronicle extends Activity {
     private Preview mPreview;
@@ -47,7 +59,13 @@ public class Chronicle extends Activity {
 
         // Create a RelativeLayout container that will hold a SurfaceView,
         // and set it as the content of our activity.
-        mPreview = new Preview(this);
+        String backgroundImagePath = getPreferences(MODE_PRIVATE).getString("referenceImage", null);
+        Drawable d;
+        if(backgroundImagePath == null)
+        	d = null;
+        else
+        	d = getBackgroundDrawable(backgroundImagePath);
+        mPreview = new Preview(this, d);
         setContentView(mPreview);
 
         // Find the total number of cameras available
@@ -55,12 +73,12 @@ public class Chronicle extends Activity {
 
         // Find the ID of the default camera
         CameraInfo cameraInfo = new CameraInfo();
-            for (int i = 0; i < numberOfCameras; i++) {
-                Camera.getCameraInfo(i, cameraInfo);
-                if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
-                    defaultCameraId = i;
-                }
-            }
+        for (int i = 0; i < numberOfCameras; i++) {
+        	Camera.getCameraInfo(i, cameraInfo);
+        	if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
+        		defaultCameraId = i;
+        	}
+        }
     }
 
     @Override
@@ -76,9 +94,6 @@ public class Chronicle extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        // Because the Camera object is a shared resource, it's very
-        // important to release it when the activity is paused.
         if (mCamera != null) {
             mPreview.setCamera(null);
             mCamera.release();
@@ -86,19 +101,21 @@ public class Chronicle extends Activity {
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        // Inflate our menu which can gather user input for switching camera
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.camera_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.camera_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 //        // Handle item selection
-//        switch (item.getItemId()) {
+        switch (item.getItemId()) {
+        case R.id.pick_picture:
+        	Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        	intent.setType("image/*");
+        	startActivityForResult(intent, 0);
 //        case R.id.switch_cam:
 //            // check for availability of multiple cameras
 //            if (numberOfCameras == 1) {
@@ -130,10 +147,47 @@ public class Chronicle extends Activity {
 //            // Start the preview
 //            mCamera.startPreview();
 //            return true;
-//        default:
-//            return super.onOptionsItemSelected(item);
-//        }
-//    }
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
+
+        switch(requestCode) { 
+        case 0:
+            if(resultCode == RESULT_OK){  
+                Uri selectedImage = imageReturnedIntent.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                cursor.close();
+
+                
+        		mPreview.setBackgroundDrawable(getBackgroundDrawable(filePath));
+
+                Editor prefs = getPreferences(MODE_PRIVATE).edit();
+                prefs.putString("referenceImage", filePath);
+                prefs.commit();
+                
+            }
+        }
+    }
+
+	private Drawable getBackgroundDrawable(String filePath) {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inSampleSize = 8;
+		Bitmap b = BitmapFactory.decodeFile(filePath, options);
+		BitmapDrawable d = new BitmapDrawable(getResources(), b);
+		d.setAlpha(128);
+		return d;
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -152,7 +206,9 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
     List<Size> mSupportedPreviewSizes;
     Camera mCamera;
 
-    Preview(Context context) {
+	private TextView text;
+
+    Preview(Context context, Drawable d) {
         super(context);
 
         mSurfaceView = new SurfaceView(context);
@@ -162,17 +218,16 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
         mHolder = mSurfaceView.getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        TextView text = new TextView(context);
-        text.setText("  Fooooooo  !");        
-        ColorDrawable cd = new ColorDrawable(0xdd888888);
-//        cd.setAlpha(128);
-		text.setBackgroundDrawable(cd);
-		addView(text);
         text = new TextView(context);
-        text.setText("Bar          !");
-        addView(text);
+        text.setText("  Fooooooo  !");        
+		text.setBackgroundDrawable(d);
+		addView(text);
     }
 
+    public void setBackgroundDrawable(Drawable d) {
+    	text.setBackgroundDrawable(d);
+    }
+    
     public void setCamera(Camera camera) {
         mCamera = camera;
         if (mCamera != null) {
