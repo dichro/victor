@@ -7,6 +7,7 @@ import to.rcpt.DailySnap.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -32,13 +34,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class Chronicle extends Activity {
-    private Preview mPreview;
+    private static final String REFERENCE_IMAGE = "referenceImage";
+	private static final String DEFAULT_CAMERA = "defaultCamera";
+	private static final String TAG = "Chronicle";
+	private Preview mPreview;
     Camera mCamera;
     int numberOfCameras;
     int cameraCurrentlyLocked;
-
-    // The first rear facing camera
-    int defaultCameraId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +50,8 @@ public class Chronicle extends Activity {
 
         // Create a RelativeLayout container that will hold a SurfaceView,
         // and set it as the content of our activity.
-        String backgroundImagePath = getPreferences(MODE_PRIVATE).getString("referenceImage", null);
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+		String backgroundImagePath = prefs.getString(REFERENCE_IMAGE, null);
         Drawable d;
         if(backgroundImagePath == null)
         	d = null;
@@ -57,26 +60,28 @@ public class Chronicle extends Activity {
         mPreview = new Preview(this, d);
         setContentView(mPreview);
 
-        // Find the total number of cameras available
         numberOfCameras = Camera.getNumberOfCameras();
+        cameraCurrentlyLocked = prefs.getInt(DEFAULT_CAMERA, -1);
+        Log.i(TAG, "read def camera " + cameraCurrentlyLocked + " of " + numberOfCameras);
 
-        // Find the ID of the default camera
-        CameraInfo cameraInfo = new CameraInfo();
-        for (int i = 0; i < numberOfCameras; i++) {
-        	Camera.getCameraInfo(i, cameraInfo);
-        	if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
-        		defaultCameraId = i;
+        if((cameraCurrentlyLocked < 0) || (cameraCurrentlyLocked >= numberOfCameras)) {
+        	CameraInfo cameraInfo = new CameraInfo();
+        	for (int i = 0; i < numberOfCameras; i++) {
+        		Camera.getCameraInfo(i, cameraInfo);
+        		if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
+        			cameraCurrentlyLocked= i;
+        		}
         	}
         }
+       
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Open the default i.e. the first rear facing camera.
-        mCamera = Camera.open();
-        cameraCurrentlyLocked = defaultCameraId;
+        Log.i(TAG, "Opening camera " + cameraCurrentlyLocked);
+        mCamera = Camera.open(cameraCurrentlyLocked);
         mPreview.setCamera(mCamera);
     }
 
@@ -121,6 +126,10 @@ public class Chronicle extends Activity {
                     % numberOfCameras;
             mPreview.switchCamera(mCamera);
             mCamera.startPreview();
+            Editor prefs = getPreferences(MODE_PRIVATE).edit();
+			prefs.putInt(DEFAULT_CAMERA, cameraCurrentlyLocked);
+			Log.i(TAG, "Def camera " + cameraCurrentlyLocked);
+			prefs.commit();
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -148,7 +157,7 @@ public class Chronicle extends Activity {
         		mPreview.setBackgroundDrawable(getBackgroundDrawable(filePath));
 
                 Editor prefs = getPreferences(MODE_PRIVATE).edit();
-                prefs.putString("referenceImage", filePath);
+                prefs.putString(REFERENCE_IMAGE, filePath);
                 prefs.commit();
                 
             }
@@ -324,12 +333,12 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        // Now that the size is known, set up the camera parameters and begin
-        // the preview.
+        if (mSupportedPreviewSizes != null) {
+            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, getMeasuredWidth(), getMeasuredHeight());
+        }
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         requestLayout();
-
         mCamera.setParameters(parameters);
         mCamera.startPreview();
     }
