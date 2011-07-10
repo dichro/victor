@@ -219,8 +219,9 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         text = new TextView(context);
-        text.setText("  Fooooooo  !");        
-		text.setBackgroundDrawable(d);
+        text.setText("  Fooooooo  !");  
+        if(d != null)
+        	text.setBackgroundDrawable(d);
 		addView(text);
     }
 
