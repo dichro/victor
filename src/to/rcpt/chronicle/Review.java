@@ -38,12 +38,12 @@ public class Review extends Activity {
         BitmapFactoryQuery prospectBitmap = new BitmapFactoryQuery() {
 			@Override
 			public Bitmap factoryDecode(Options options) {
-				return BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+				return BitmapFactory.decodeByteArray(imageData, 0, imageData.length, options);
 			}
 		};
         
 		projectBitmap(reference, referenceBitmap);
-		projectBitmap(prospect, prospectBitmap);        
+		projectBitmap(prospect, prospectBitmap);
     }
 
 	private void projectBitmap(ImageView view, BitmapFactoryQuery bitmapQuery) {
