@@ -3,7 +3,6 @@ package to.rcpt.chronicle;
 import java.io.IOException;
 import java.util.List;
 
-import to.rcpt.DailySnap.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,9 +15,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -34,13 +33,28 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class Chronicle extends Activity {
-    private static final String REFERENCE_IMAGE = "referenceImage";
+	public class JpegCallback implements PictureCallback {
+		public String referenceImage = null;
+
+		@Override
+		public void onPictureTaken(byte[] data, Camera camera) {
+			Intent i = new Intent(Chronicle.this, Review.class);
+			i.putExtra(IMAGE_DATA, data);
+			if(referenceImage != null)
+				i.putExtra(REFERENCE_IMAGE, referenceImage);
+			Chronicle.this.startActivity(i);
+		}
+	}
+
+	public static final String IMAGE_DATA = "imageData";
+    public static final String REFERENCE_IMAGE = "referenceImage";
 	private static final String DEFAULT_CAMERA = "defaultCamera";
 	private static final String TAG = "Chronicle";
 	private Preview mPreview;
     Camera mCamera;
     int numberOfCameras;
     int cameraCurrentlyLocked;
+	public JpegCallback pictureCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +71,9 @@ public class Chronicle extends Activity {
         	d = null;
         else
         	d = getBackgroundDrawable(backgroundImagePath);
-        mPreview = new Preview(this, d);
+		pictureCallback = new JpegCallback();
+		pictureCallback.referenceImage = backgroundImagePath;
+        mPreview = new Preview(this, d, pictureCallback);
         setContentView(mPreview);
 
         numberOfCameras = Camera.getNumberOfCameras();
@@ -69,7 +85,7 @@ public class Chronicle extends Activity {
         	for (int i = 0; i < numberOfCameras; i++) {
         		Camera.getCameraInfo(i, cameraInfo);
         		if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
-        			cameraCurrentlyLocked= i;
+        			cameraCurrentlyLocked = i;
         		}
         	}
         }
@@ -152,14 +168,13 @@ public class Chronicle extends Activity {
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String filePath = cursor.getString(columnIndex);
                 cursor.close();
-
                 
         		mPreview.setBackgroundDrawable(getBackgroundDrawable(filePath));
 
                 Editor prefs = getPreferences(MODE_PRIVATE).edit();
                 prefs.putString(REFERENCE_IMAGE, filePath);
                 prefs.commit();
-                
+                pictureCallback.referenceImage = filePath;
             }
         }
     }
@@ -189,12 +204,12 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
     Size mPreviewSize;
     List<Size> mSupportedPreviewSizes;
     Camera mCamera;
-
+    PictureCallback pictureCallback;
 	private TextView text;
 
-    Preview(Context context, Drawable d) {
+    Preview(Context context, Drawable d, PictureCallback cb) {
         super(context);
-
+        pictureCallback = cb;
         mSurfaceView = new SurfaceView(context);
         addView(mSurfaceView);
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -203,10 +218,16 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         text = new TextView(context);
-        text.setText("  Fooooooo  !");  
+        text.setText("Touch the image to take a photo.");  
         if(d != null)
         	text.setBackgroundDrawable(d);
 		addView(text);
+		mSurfaceView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mCamera.takePicture(null, null, pictureCallback);
+			}
+		});
     }
 
     public void setBackgroundDrawable(Drawable d) {
