@@ -2,6 +2,7 @@ package to.rcpt.chronicle;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -47,33 +48,42 @@ public class Review extends Activity {
     }
 
 	private void projectBitmap(ImageView view, BitmapFactoryQuery bitmapQuery) {
-        boolean portraitOrientation = true;
-		Display display = getWindowManager().getDefaultDisplay(); 
-        int width = display.getWidth();
-        int height = display.getHeight();
-        if(portraitOrientation)
-        	height /= 3;
-        else
-        	width /= 3;
+		// TODO(dichro): there should be a way of having the layout declare the proportions
+		// of the two imageviews and the button panel, and then just pull out the laid-out
+		// dimensions here and use them as the target dimensions for the image. But I can't
+		// work out how to do it, so we just aim to make each picture a third of the governing
+		// dimension.
+		Display display = getWindowManager().getDefaultDisplay();
+		float perImageScreenFraction = 0.4f;
+        float width = display.getWidth();
+        float height = display.getHeight();
+        int orientation = getResources().getConfiguration().orientation;
+        if(orientation != Configuration.ORIENTATION_LANDSCAPE)
+        	height *= perImageScreenFraction;
+        if(orientation != Configuration.ORIENTATION_PORTRAIT)
+        	width *= perImageScreenFraction;
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
 		bitmapQuery.factoryDecode(options);
-		int hScale = options.outHeight / height;
-		int vScale = options.outWidth / width;
-		float aspectRatio = (float)options.outWidth / options.outHeight;
+		float hScale = (float)options.outHeight / height;
+		float vScale = (float)options.outWidth / width;
 		
-		options.inSampleSize = hScale > vScale ? hScale : vScale;
+		float maxScale = hScale > vScale ? hScale : vScale;
+		options.inSampleSize = (int)maxScale;
 		if (options.inSampleSize < 1)
 			options.inSampleSize = 1;
-		
 		options.inJustDecodeBounds = false;
-		int scaledWidth = (int)(aspectRatio * height);
+		
+		int scaledHeight = (int)(options.outHeight / maxScale);
+		int scaledWidth = (int)(options.outWidth / maxScale);
+		
 		Log.i(TAG, "Projecting " + options.outWidth + "x" + options.outHeight + " into " +
-				width + "x" + height + " by downsampling " + options.inSampleSize + "x and scaling to " +
-				scaledWidth + "x" + height);
+				width + "x" + height + " by downsampling " + options.inSampleSize + "x and scaling " +
+						" to " +
+				scaledWidth + "x" + scaledHeight);
 		view.setImageBitmap(Bitmap.createScaledBitmap(
 				bitmapQuery.factoryDecode(options),
-				scaledWidth, height, true));
+				scaledWidth, scaledHeight, true));
 	}
 	
 	public void acceptImage(View v) {
