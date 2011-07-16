@@ -38,15 +38,18 @@ public class Chronicle extends Activity {
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
+			Log.i(TAG, "onPictureTaken");
 			Intent i = new Intent(Chronicle.this, Review.class);
-			i.putExtra(IMAGE_DATA, data);
+//			i.putExtra(IMAGE_DATA, data);
+			i.putExtra(IMAGE_ROTATION, getWindowManager().getDefaultDisplay().getRotation());
 			if(referenceImage != null)
 				i.putExtra(REFERENCE_IMAGE, referenceImage);
-			Chronicle.this.startActivity(i);
+			startActivity(i);
 		}
 	}
 
 	public static final String IMAGE_DATA = "imageData";
+	public static final String IMAGE_ROTATION = "imageRotation";
     public static final String REFERENCE_IMAGE = "referenceImage";
 	private static final String DEFAULT_CAMERA = "defaultCamera";
 	private static final String TAG = "Chronicle";
@@ -363,5 +366,4 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
         mCamera.setParameters(parameters);
         mCamera.startPreview();
     }
-
 }
