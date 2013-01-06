@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -19,7 +18,8 @@ import android.widget.FrameLayout;
  * because not all devices have cameras that support preview sizes at the same
  * aspect ratio as the device's display.
  */
-class Preview extends FrameLayout implements SurfaceHolder.Callback {
+class Preview extends FrameLayout implements SurfaceHolder.Callback,
+		Camera.PreviewCallback {
 	private final String TAG = "Chronicle";
 
 	SurfaceView mSurfaceView;
@@ -27,11 +27,9 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
 	Size mPreviewSize;
 	List<Size> mSupportedPreviewSizes;
 	Camera mCamera;
-	PictureCallback pictureCallback;
 
-	Preview(Context context, PictureCallback cb) {
+	Preview(Context context) {
 		super(context);
-		pictureCallback = cb;
 		mSurfaceView = new SurfaceView(context);
 		addView(mSurfaceView);
 		// Install a SurfaceHolder.Callback so we get notified when the
@@ -39,12 +37,6 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
 		mHolder = mSurfaceView.getHolder();
 		mHolder.addCallback(this);
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		// mSurfaceView.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// mCamera.takePicture(null, null, pictureCallback);
-		// }
-		// });
 	}
 
 	public void setCamera(Camera camera) {
@@ -184,6 +176,12 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
 		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 		requestLayout();
 		mCamera.setParameters(parameters);
+		mCamera.setPreviewCallback(this);
 		mCamera.startPreview();
+	}
+
+	@Override
+	public void onPreviewFrame(byte[] data, Camera camera) {
+		Log.i("Preview", "got " + data.length + " from " + camera);
 	}
 }

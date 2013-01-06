@@ -1,12 +1,10 @@
 package to.rcpt.chronicle;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,24 +14,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class Chronicle extends Activity {
-	public class JpegCallback implements PictureCallback {
-		public String referenceImage = null;
-
-		@Override
-		public void onPictureTaken(byte[] data, Camera camera) {
-			Log.i(TAG, "onPictureTaken");
-			// Intent i = new Intent(Chronicle.this, Review.class);
-			// // i.putExtra(IMAGE_DATA, data);
-			// i.putExtra(IMAGE_ROTATION,
-			// getWindowManager().getDefaultDisplay().getRotation());
-			// if(referenceImage != null)
-			// i.putExtra(REFERENCE_IMAGE, referenceImage);
-			// startActivity(i);
-		}
-	}
-
-	// public static final String IMAGE_DATA = "imageData";
-	// public static final String IMAGE_ROTATION = "imageRotation";
 	public static final String REFERENCE_IMAGE = "referenceImage";
 	private static final String DEFAULT_CAMERA = "defaultCamera";
 	private static final String TAG = "Chronicle";
@@ -41,7 +21,6 @@ public class Chronicle extends Activity {
 	Camera mCamera;
 	int numberOfCameras;
 	int cameraCurrentlyLocked;
-	public JpegCallback pictureCallback;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +31,7 @@ public class Chronicle extends Activity {
 		// Create a RelativeLayout container that will hold a SurfaceView,
 		// and set it as the content of our activity.
 		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-		String backgroundImagePath = prefs.getString(REFERENCE_IMAGE, null);
-		pictureCallback = new JpegCallback();
-		pictureCallback.referenceImage = backgroundImagePath;
-		mPreview = new Preview(this, pictureCallback);
+		mPreview = new Preview(this);
 		setContentView(mPreview);
 
 		numberOfCameras = Camera.getNumberOfCameras();
@@ -110,10 +86,6 @@ public class Chronicle extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.pick_picture:
-			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-			intent.setType("image/*");
-			startActivityForResult(intent, 0);
 		case R.id.switch_camera:
 			if (mCamera != null) {
 				mCamera.stopPreview();
