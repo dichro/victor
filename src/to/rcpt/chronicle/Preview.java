@@ -176,12 +176,15 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 		requestLayout();
 		mCamera.setParameters(parameters);
-		mCamera.setPreviewCallback(this);
+		mCamera.setPreviewCallbackWithBuffer(this);
+		// TODO(dichro): calculate the correct size
+		mCamera.addCallbackBuffer(new byte[600000]);
 		mCamera.startPreview();
 	}
 
 	@Override
 	public void onPreviewFrame(byte[] data, Camera camera) {
 		Log.i("Preview", "got " + data.length + " from " + camera);
+		mCamera.addCallbackBuffer(data);
 	}
 }
