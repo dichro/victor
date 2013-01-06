@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
@@ -30,7 +29,7 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
 	Camera mCamera;
 	PictureCallback pictureCallback;
 
-	Preview(Context context, Drawable d, PictureCallback cb) {
+	Preview(Context context, PictureCallback cb) {
 		super(context);
 		pictureCallback = cb;
 		mSurfaceView = new SurfaceView(context);

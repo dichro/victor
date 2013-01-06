@@ -4,17 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,14 +53,9 @@ public class Chronicle extends Activity {
 		// and set it as the content of our activity.
 		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 		String backgroundImagePath = prefs.getString(REFERENCE_IMAGE, null);
-		Drawable d;
-		if (backgroundImagePath == null)
-			d = null;
-		else
-			d = getBackgroundDrawable(backgroundImagePath);
 		pictureCallback = new JpegCallback();
 		pictureCallback.referenceImage = backgroundImagePath;
-		mPreview = new Preview(this, d, pictureCallback);
+		mPreview = new Preview(this, pictureCallback);
 		setContentView(mPreview);
 
 		numberOfCameras = Camera.getNumberOfCameras();
@@ -80,7 +68,7 @@ public class Chronicle extends Activity {
 			CameraInfo cameraInfo = new CameraInfo();
 			for (int i = 0; i < numberOfCameras; i++) {
 				Camera.getCameraInfo(i, cameraInfo);
-				if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
+				if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
 					cameraCurrentlyLocked = i;
 				}
 			}
@@ -147,44 +135,6 @@ public class Chronicle extends Activity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent imageReturnedIntent) {
-		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-		switch (requestCode) {
-		case 0:
-			if (resultCode == RESULT_OK) {
-				Uri selectedImage = imageReturnedIntent.getData();
-				String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-				Cursor cursor = getContentResolver().query(selectedImage,
-						filePathColumn, null, null, null);
-				cursor.moveToFirst();
-
-				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-				String filePath = cursor.getString(columnIndex);
-				cursor.close();
-
-				mPreview.setBackgroundDrawable(getBackgroundDrawable(filePath));
-
-				Editor prefs = getPreferences(MODE_PRIVATE).edit();
-				prefs.putString(REFERENCE_IMAGE, filePath);
-				prefs.commit();
-				pictureCallback.referenceImage = filePath;
-			}
-		}
-	}
-
-	private Drawable getBackgroundDrawable(String filePath) {
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inSampleSize = 8;
-		Bitmap b = BitmapFactory.decodeFile(filePath, options);
-		BitmapDrawable d = new BitmapDrawable(getResources(), b);
-		d.setAlpha(128);
-		return d;
 	}
 }
 
