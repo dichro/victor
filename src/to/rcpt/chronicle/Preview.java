@@ -12,6 +12,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.jwetherell.motion_detection.detection.IMotionDetection;
+import com.jwetherell.motion_detection.detection.RgbMotionDetection;
+import com.jwetherell.motion_detection.image.ImageProcessing;
+
 /**
  * A simple wrapper around a Camera and a SurfaceView that renders a centered
  * preview of the Camera to the surface. We need to center the SurfaceView
@@ -182,9 +186,18 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 		mCamera.startPreview();
 	}
 
+	private final IMotionDetection detector = new RgbMotionDetection();
+
 	@Override
 	public void onPreviewFrame(byte[] data, Camera camera) {
-		Log.i("Preview", "got " + data.length + " from " + camera);
+		Log.i(TAG, "got " + data.length + " from " + camera);
+		Size previewSize = camera.getParameters().getPreviewSize();
+		int[] rgb = ImageProcessing.decodeYUV420SPtoRGB(data,
+				previewSize.width, previewSize.height);
+		Log.i(TAG,
+				"detect said "
+						+ detector.detect(rgb, previewSize.width,
+								previewSize.height));
 		mCamera.addCallbackBuffer(data);
 	}
 }
