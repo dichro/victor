@@ -39,17 +39,17 @@ public class Chronicle extends Activity {
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
 			Log.i(TAG, "onPictureTaken");
-			Intent i = new Intent(Chronicle.this, Review.class);
-//			i.putExtra(IMAGE_DATA, data);
-			i.putExtra(IMAGE_ROTATION, getWindowManager().getDefaultDisplay().getRotation());
-			if(referenceImage != null)
-				i.putExtra(REFERENCE_IMAGE, referenceImage);
-			startActivity(i);
+//			Intent i = new Intent(Chronicle.this, Review.class);
+////			i.putExtra(IMAGE_DATA, data);
+//			i.putExtra(IMAGE_ROTATION, getWindowManager().getDefaultDisplay().getRotation());
+//			if(referenceImage != null)
+//				i.putExtra(REFERENCE_IMAGE, referenceImage);
+//			startActivity(i);
 		}
 	}
 
-	public static final String IMAGE_DATA = "imageData";
-	public static final String IMAGE_ROTATION = "imageRotation";
+//	public static final String IMAGE_DATA = "imageData";
+//	public static final String IMAGE_ROTATION = "imageRotation";
     public static final String REFERENCE_IMAGE = "referenceImage";
 	private static final String DEFAULT_CAMERA = "defaultCamera";
 	private static final String TAG = "Chronicle";
@@ -101,6 +101,7 @@ public class Chronicle extends Activity {
 
         Log.i(TAG, "Opening camera " + cameraCurrentlyLocked);
         mCamera = Camera.open(cameraCurrentlyLocked);
+        Log.i(TAG, "Got camera " + mCamera);
         mPreview.setCamera(mCamera);
     }
 
@@ -220,17 +221,12 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
         mHolder = mSurfaceView.getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        text = new TextView(context);
-        text.setText("Touch the image to take a photo.");  
-        if(d != null)
-        	text.setBackgroundDrawable(d);
-		addView(text);
-		mSurfaceView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mCamera.takePicture(null, null, pictureCallback);
-			}
-		});
+//		mSurfaceView.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				mCamera.takePicture(null, null, pictureCallback);
+//			}
+//		});
     }
 
     public void setBackgroundDrawable(Drawable d) {
@@ -360,6 +356,7 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback {
         if (mSupportedPreviewSizes != null) {
             mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, getMeasuredWidth(), getMeasuredHeight());
         }
+        // interesting. If you launch with the screen off, NPE occurs here.
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         requestLayout();
