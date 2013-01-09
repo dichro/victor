@@ -114,7 +114,7 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 				// child.layout(0, (height - scaledChildHeight) / 2, width,
 				// (height + scaledChildHeight) / 2);
 				// }
-				child.layout(0, 0, 240, 240);
+				child.layout(100, 100, 340, 340);
 			}
 	}
 
