@@ -26,11 +26,11 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 		Camera.PreviewCallback {
 	private final String TAG = "Chronicle";
 
-	SurfaceView mSurfaceView;
-	SurfaceHolder mHolder;
-	Size mPreviewSize;
-	List<Size> mSupportedPreviewSizes;
-	Camera mCamera;
+	private SurfaceView mSurfaceView;
+	private SurfaceHolder mHolder;
+	private Size mPreviewSize;
+	private List<Size> mSupportedPreviewSizes;
+	private Camera mCamera;
 
 	Preview(Context context) {
 		super(context);
@@ -69,21 +69,22 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 		camera.setParameters(parameters);
 	}
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// We purposely disregard child measurements because act as a
-		// wrapper to a SurfaceView that centers the camera preview instead
-		// of stretching it.
-		final int width = resolveSize(getSuggestedMinimumWidth(),
-				widthMeasureSpec);
-		final int height = resolveSize(getSuggestedMinimumHeight(),
-				heightMeasureSpec);
-		setMeasuredDimension(width, height);
-		if (mSupportedPreviewSizes != null) {
-			mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width,
-					height);
-		}
-	}
+	// @Override
+	// protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	// // We purposely disregard child measurements because act as a
+	// // wrapper to a SurfaceView that centers the camera preview instead
+	// // of stretching it.
+	// final int width = resolveSize(getSuggestedMinimumWidth(),
+	// widthMeasureSpec);
+	// final int height = resolveSize(getSuggestedMinimumHeight(),
+	// heightMeasureSpec);
+	// Log.i(TAG, "size " + width + "x" + height);
+	// setMeasuredDimension(width, height);
+	// if (mSupportedPreviewSizes != null) {
+	// mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width,
+	// height);
+	// }
+	// }
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -102,17 +103,18 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 				}
 
 				// Center the child SurfaceView within the parent.
-				if (width * previewHeight > height * previewWidth) {
-					final int scaledChildWidth = previewWidth * height
-							/ previewHeight;
-					child.layout((width - scaledChildWidth) / 2, 0,
-							(width + scaledChildWidth) / 2, height);
-				} else {
-					final int scaledChildHeight = previewHeight * width
-							/ previewWidth;
-					child.layout(0, (height - scaledChildHeight) / 2, width,
-							(height + scaledChildHeight) / 2);
-				}
+				// if (width * previewHeight > height * previewWidth) {
+				// final int scaledChildWidth = previewWidth * height
+				// / previewHeight;
+				// child.layout((width - scaledChildWidth) / 2, 0,
+				// (width + scaledChildWidth) / 2, height);
+				// } else {
+				// final int scaledChildHeight = previewHeight * width
+				// / previewWidth;
+				// child.layout(0, (height - scaledChildHeight) / 2, width,
+				// (height + scaledChildHeight) / 2);
+				// }
+				child.layout(0, 0, 240, 240);
 			}
 	}
 
@@ -121,6 +123,7 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 		// to draw.
 		try {
 			if (mCamera != null) {
+				Log.i(TAG, "size " + mCamera.getParameters().getPreviewSize());
 				mCamera.setPreviewDisplay(holder);
 			}
 		} catch (IOException exception) {
@@ -173,7 +176,8 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 		if (mSupportedPreviewSizes != null) {
 			mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes,
-					getMeasuredWidth(), getMeasuredHeight());
+			// getMeasuredWidth(), getMeasuredHeight());
+					280, 280);
 		}
 		// interesting. If you launch with the screen off, NPE occurs here.
 		Camera.Parameters parameters = mCamera.getParameters();
@@ -194,10 +198,10 @@ class Preview extends FrameLayout implements SurfaceHolder.Callback,
 		Size previewSize = camera.getParameters().getPreviewSize();
 		int[] rgb = ImageProcessing.decodeYUV420SPtoRGB(data,
 				previewSize.width, previewSize.height);
-		Log.i(TAG,
-				"detect said "
-						+ detector.detect(rgb, previewSize.width,
-								previewSize.height));
+		// Log.i(TAG,
+		// "detect said "
+		// + detector.detect(rgb, previewSize.width,
+		// previewSize.height));
 		mCamera.addCallbackBuffer(data);
 	}
 }

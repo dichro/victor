@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 public class Chronicle extends Activity {
 	public static final String REFERENCE_IMAGE = "referenceImage";
@@ -27,12 +28,12 @@ public class Chronicle extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-		// Create a RelativeLayout container that will hold a SurfaceView,
-		// and set it as the content of our activity.
 		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 		mPreview = new Preview(this);
-		setContentView(mPreview);
+
+		setContentView(R.layout.main);
+		LinearLayout ll = (LinearLayout) findViewById(R.id.top);
+		ll.addView(mPreview);
 
 		numberOfCameras = Camera.getNumberOfCameras();
 		cameraCurrentlyLocked = prefs.getInt(DEFAULT_CAMERA, -1);
