@@ -70,8 +70,9 @@ class Preview extends FrameLayout {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		int desiredW = MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY);
-		int desiredH = MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY);
+		setMeasuredDimension(300, 300);
+		// int desiredW = MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY);
+		// int desiredH = MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY);
 		// // We purposely disregard child measurements because act as a
 		// // wrapper to a SurfaceView that centers the camera preview instead
 		// // of stretching it.
@@ -87,29 +88,29 @@ class Preview extends FrameLayout {
 		// }
 		// int h = getSuggestedMinimumHeight();
 		// int w = getSuggestedMinimumWidth();
-		int w = resolveSize(desiredW, widthMeasureSpec);
-		int h = resolveSize(desiredH, heightMeasureSpec);
-		Log.i(TAG, "spec " + MeasureSpec.toString(widthMeasureSpec) + " "
-				+ " x " + MeasureSpec.toString(heightMeasureSpec));
-		Log.i(TAG,
-				"resolved " + MeasureSpec.toString(w) + " x "
-						+ MeasureSpec.toString(h));
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		Log.i(TAG, "did " + getMeasuredWidth() + "x" + getMeasuredHeight());
-		int mw = getMeasuredWidth(), mh = getMeasuredHeight();
-		boolean ok = true;
-		if (mw < 400) {
-			mw = 400;
-			ok = false;
-		}
-		if (mh < 400) {
-			mh = 400;
-			ok = false;
-		}
-		if (!ok) {
-			// Log.i(TAG, "overriding " + mw + "x" + mh);
-			// setMeasuredDimension(mw, mh);
-		}
+		// int w = resolveSize(desiredW, widthMeasureSpec);
+		// int h = resolveSize(desiredH, heightMeasureSpec);
+		// Log.i(TAG, "spec " + MeasureSpec.toString(widthMeasureSpec) + " "
+		// + " x " + MeasureSpec.toString(heightMeasureSpec));
+		// Log.i(TAG,
+		// "resolved " + MeasureSpec.toString(w) + " x "
+		// + MeasureSpec.toString(h));
+		// super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		// Log.i(TAG, "did " + getMeasuredWidth() + "x" + getMeasuredHeight());
+		// int mw = getMeasuredWidth(), mh = getMeasuredHeight();
+		// boolean ok = true;
+		// if (mw < 400) {
+		// mw = 400;
+		// ok = false;
+		// }
+		// if (mh < 400) {
+		// mh = 400;
+		// ok = false;
+		// }
+		// if (!ok) {
+		// Log.i(TAG, "overriding " + mw + "x" + mh);
+		// setMeasuredDimension(mw, mh);
+		// }
 		// setMeasuredDimension(w, h);
 		// varm.measure(widthMeasureSpec, heightMeasureSpec);
 		// Log.i(TAG,
@@ -123,7 +124,11 @@ class Preview extends FrameLayout {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		Log.i(TAG, "onLayout(" + changed + ", " + l + ", " + t + ", " + r
 				+ ", " + b + ")");
-		super.onLayout(changed, l, t, r, b);
+		int x = 5;
+		if (changed) {
+			// mSurfaceView.layout(l + x, t + x, r - x, b - x);
+			mSurfaceView.layout(x, x, 300 - 2 * x, 300 - 2 * x);
+		}
 		// if (changed)
 		// for (int i = 0; i < getChildCount(); i++) {
 		// final View child = getChildAt(i);

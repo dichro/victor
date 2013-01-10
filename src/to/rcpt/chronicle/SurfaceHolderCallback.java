@@ -43,6 +43,7 @@ class SurfaceHolderCallback implements SurfaceHolder.Callback {
 	}
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+		Log.d(this.preview.TAG, "surfaceChanged " + w + "x" + h);
 		if (this.preview.mSupportedPreviewSizes != null) {
 			this.preview.mPreviewSize = this.preview.getOptimalPreviewSize(
 					this.preview.mSupportedPreviewSizes,
