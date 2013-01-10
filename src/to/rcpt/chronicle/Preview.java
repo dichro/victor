@@ -70,6 +70,8 @@ class Preview extends FrameLayout {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		Log.i(TAG, "onMeasure(" + MeasureSpec.toString(widthMeasureSpec) + " "
+				+ ", " + MeasureSpec.toString(heightMeasureSpec) + ")");
 		setMeasuredDimension(300, 300);
 		// int desiredW = MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY);
 		// int desiredH = MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY);
@@ -90,8 +92,6 @@ class Preview extends FrameLayout {
 		// int w = getSuggestedMinimumWidth();
 		// int w = resolveSize(desiredW, widthMeasureSpec);
 		// int h = resolveSize(desiredH, heightMeasureSpec);
-		// Log.i(TAG, "spec " + MeasureSpec.toString(widthMeasureSpec) + " "
-		// + " x " + MeasureSpec.toString(heightMeasureSpec));
 		// Log.i(TAG,
 		// "resolved " + MeasureSpec.toString(w) + " x "
 		// + MeasureSpec.toString(h));
@@ -126,7 +126,6 @@ class Preview extends FrameLayout {
 				+ ", " + b + ")");
 		int x = 5;
 		if (changed) {
-			// mSurfaceView.layout(l + x, t + x, r - x, b - x);
 			mSurfaceView.layout(x, x, 300 - 2 * x, 300 - 2 * x);
 		}
 		// if (changed)
