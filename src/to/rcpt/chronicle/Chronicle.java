@@ -50,6 +50,9 @@ public class Chronicle extends Activity {
 				}
 			}
 		}
+		if (cameraCurrentlyLocked < 0) {
+			cameraCurrentlyLocked = numberOfCameras - 1;
+		}
 
 	}
 
