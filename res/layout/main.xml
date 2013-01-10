@@ -2,15 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="horizontal"
     android:id="@+id/top"
     >
-    <TextView android:id="@+id/selection"
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#ff0033cc"
-        android:text="test"
+        android:text="test2"
 	  android:textSize="10pt"
  	  android:textStyle="bold"
         />
-        
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ff0033cc"
+        android:text="test3"
+	  android:textSize="10pt"
+ 	  android:textStyle="bold"
+        />
+</LinearLayout>
+ -->
+<!-- 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/top"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ff0033cc"
+        android:text="test2test"
+	  android:textSize="10pt"
+ 	  android:textStyle="bold"
+        />
+    </LinearLayout>
+    
+ -->
 </LinearLayout>
