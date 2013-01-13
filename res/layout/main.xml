@@ -1,66 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    >
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#ff0033cc"
-        android:text="before1"
-	  android:textSize="10pt"
- 	  android:textStyle="bold"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#ff0033cc"
-        android:text="before2"
-	  android:textSize="10pt"
- 	  android:textStyle="bold"
-        />
-</LinearLayout>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     android:id="@+id/top"
-    android:orientation="horizontal"
+    android:columnCount="3"
+    android:rowCount="2"
     >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#ff0033cc"
-        android:text="with"
+    <to.rcpt.lamplighter.PostingButton
+        android:text="All Off"
 	  android:textSize="10pt"
  	  android:textStyle="bold"
         />
-</LinearLayout>    
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#ff0033cc"
-        android:text="after1"
-	  android:textSize="10pt"
- 	  android:textStyle="bold"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#ff0033cc"
-        android:text="after2"
-	  android:textSize="10pt"
- 	  android:textStyle="bold"
-        />
-</LinearLayout>
-</LinearLayout>
+</GridLayout>

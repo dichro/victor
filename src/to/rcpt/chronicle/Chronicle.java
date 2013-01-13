@@ -12,12 +12,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.GridLayout;
 
 public class Chronicle extends Activity {
 	public static final String REFERENCE_IMAGE = "referenceImage";
 	private static final String DEFAULT_CAMERA = "defaultCamera";
-	private static final String TAG = "Chronicle";
+	private final String TAG = getClass().getName();
 	private Preview mPreview;
 	Camera mCamera;
 	int numberOfCameras;
@@ -32,8 +32,8 @@ public class Chronicle extends Activity {
 		mPreview = new Preview(this);
 
 		setContentView(R.layout.main);
-		LinearLayout ll = (LinearLayout) findViewById(R.id.top);
-		ll.addView(mPreview);
+		GridLayout ll = (GridLayout) findViewById(R.id.top);
+		ll.addView(mPreview, 0);
 
 		numberOfCameras = Camera.getNumberOfCameras();
 		cameraCurrentlyLocked = prefs.getInt(DEFAULT_CAMERA, -1);
