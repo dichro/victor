@@ -9,7 +9,11 @@
     >
     <to.rcpt.lamplighter.PostingButton
         android:text="All Off"
-	  android:textSize="10pt"
+	  android:textSize="20pt"
  	  android:textStyle="bold"
+        />
+    <to.rcpt.lamplighter.SliderBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         />
 </GridLayout>

@@ -21,17 +21,20 @@ public class Chronicle extends Activity {
 	private Preview mPreview;
 	Camera mCamera;
 	int numberOfCameras;
-	int cameraCurrentlyLocked;
+	private int cameraCurrentlyLocked = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-		mPreview = new Preview(this);
 
 		setContentView(R.layout.main);
+	}
+
+	private void setupCamera() {
+		mPreview = new Preview(this);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 		GridLayout ll = (GridLayout) findViewById(R.id.top);
 		ll.addView(mPreview, 0);
 
@@ -60,6 +63,9 @@ public class Chronicle extends Activity {
 	protected void onResume() {
 		super.onResume();
 
+		if (cameraCurrentlyLocked < 0) {
+			return;
+		}
 		Log.i(TAG, "Opening camera " + cameraCurrentlyLocked);
 		mCamera = Camera.open(cameraCurrentlyLocked);
 		Log.i(TAG, "Got camera " + mCamera);
