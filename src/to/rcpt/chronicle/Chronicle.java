@@ -26,12 +26,11 @@ public class Chronicle extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
 		setContentView(R.layout.main);
 	}
 
 	private void setupCamera() {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		mPreview = new Preview(this);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		SharedPreferences prefs = getPreferences(MODE_PRIVATE);
