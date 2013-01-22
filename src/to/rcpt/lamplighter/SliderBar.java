@@ -36,30 +36,30 @@ public class SliderBar extends SeekBar {
 
 		public void run() {
 			try {
-				update(false, "Sending request");
+				update(false, "Sending request...");
 				URL url;
-				url = new URL(
-						"http://192.168.1.2:10443/brightness/Living Room/"
-								+ ((float) getProgress() / (float) getMax()));
+				url = new URL("http://192.168.1.11:10443/" + target
+						+ "/Living%20Room/"
+						+ ((float) getProgress() / (float) getMax()));
 				HttpURLConnection urlConnection;
-				try {
-					urlConnection = (HttpURLConnection) url.openConnection();
-					InputStream inputStream = urlConnection.getInputStream();
-					// read 100 bytes, Toast if not ok
-					urlConnection.disconnect();
-				} catch (IOException e) {
-					Log.i(getClass().getName(), e.getMessage());
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				urlConnection = (HttpURLConnection) url.openConnection();
+				InputStream inputStream = urlConnection.getInputStream();
+				// read 100 bytes, Toast if not ok
+				urlConnection.disconnect();
 				// InputStream in = new
 				// BufferedInputStream(urlConnection.getInputStream());
 				// readStream(in);
+				update(true, "...OK.");
 			} catch (MalformedURLException e) {
-				// oh no you didn't.
-				return;
-			} finally {
-				update(true, "enabling");
+				update(true, "...bad URL?");
+			} catch (IOException e) {
+				Log.i(getClass().getName(), e.getMessage());
+				e.printStackTrace();
+				update(true, "...IO exception?");
+			} catch (Exception e) {
+				Log.i(getClass().getName(), e.getMessage());
+				e.printStackTrace();
+				update(true, "...unknown exception?");
 			}
 		}
 
@@ -75,8 +75,12 @@ public class SliderBar extends SeekBar {
 		}
 	}
 
+	private final String target;
+
 	public SliderBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		target = attrs.getAttributeValue("http://lamplighter.rcpt.to/",
+				"target");
 		setOnSeekBarChangeListener(new Handler());
 	}
 }
