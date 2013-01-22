@@ -79,6 +79,7 @@ public class SliderBar extends SeekBar {
 
 	public SliderBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		// TODO(dichro): do this properly
 		target = attrs.getAttributeValue("http://lamplighter.rcpt.to/",
 				"target");
 		setOnSeekBarChangeListener(new Handler());

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:lamplighter="http://lamplighter.rcpt.to/"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:id="@+id/top"
-    android:columnCount="3"
-    android:rowCount="2"
+    android:orientation="vertical"
     >
     <to.rcpt.lamplighter.PostingButton
         android:text="All Off"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
 	  android:textSize="20pt"
  	  android:textStyle="bold"
         />
@@ -18,4 +18,9 @@
         android:layout_height="wrap_content"
         lamplighter:target="brightness"
         />
-</GridLayout>
+    <to.rcpt.lamplighter.SliderBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        lamplighter:target="temperature"
+        />
+</LinearLayout>
