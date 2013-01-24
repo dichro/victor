@@ -17,4 +17,18 @@ public class PostingRadioButton extends RadioButton {
 		});
 	}
 
+	private class Listener extends NetworkHandlerBase implements
+			View.OnClickListener {
+		Listener(View view, AttributeSet attrs) {
+			super(view, attrs);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
 }

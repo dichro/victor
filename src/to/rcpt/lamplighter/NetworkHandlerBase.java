@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -14,9 +15,17 @@ class NetworkHandlerBase {
 	private final View view;
 	private final String urlBase;
 
-	NetworkHandlerBase(View view, String urlBase) {
+	NetworkHandlerBase(View view, AttributeSet attrs) {
 		this.view = view;
-		this.urlBase = urlBase;
+		StringBuilder sb = new StringBuilder("http://192.168.1.11:10443/")
+				.append(attrs.getAttributeValue("http://lamplighter.rcpt.to/",
+						"target")).append("/Living%20Room/");
+		String arg = attrs.getAttributeValue("http://lamplighter.rcpt.to/",
+				"arg");
+		if (arg != null) {
+			sb.append(arg);
+		}
+		urlBase = sb.toString();
 	}
 
 	protected void go(float arg) {
