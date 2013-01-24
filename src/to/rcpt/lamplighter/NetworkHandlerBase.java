@@ -11,12 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-class NetworkHandlerBase {
-	private final View view;
+public class NetworkHandlerBase {
 	private final String urlBase;
 
-	NetworkHandlerBase(View view, AttributeSet attrs) {
-		this.view = view;
+	protected NetworkHandlerBase(AttributeSet attrs) {
+		// TODO(dichro): do attribute lookups properly
 		StringBuilder sb = new StringBuilder("http://192.168.1.11:10443/")
 				.append(attrs.getAttributeValue("http://lamplighter.rcpt.to/",
 						"target")).append("/Living%20Room/");
@@ -28,36 +27,25 @@ class NetworkHandlerBase {
 		urlBase = sb.toString();
 	}
 
-	protected void go(float arg) {
-		new Thread(new Executor(urlBase + arg)).start();
+	protected void go(View view, float arg) {
+		go(view, urlBase + arg);
 	}
 
-	protected void go() {
-		new Thread(new Executor(urlBase)).start();
+	protected void go(View view) {
+		go(view, urlBase);
 	}
 
-	private void update(final boolean enabled) {
-		update(enabled, null);
+	public static void go(View view, String urlstr) {
+		new Thread(new Executor(view, urlstr)).start();
 	}
 
-	private void update(final boolean enabled, final String text) {
-		view.post(new Runnable() {
-			@Override
-			public void run() {
-				view.setEnabled(enabled);
-				if (text != null) {
-					Toast.makeText(view.getContext(), text, Toast.LENGTH_SHORT)
-							.show();
-				}
-			}
-		});
-	}
-
-	private class Executor implements Runnable {
+	private static class Executor implements Runnable {
 		private final String urlstr;
+		private final View view;
 
-		Executor(String url) {
-			this.urlstr = url;
+		Executor(View view, String urlstr) {
+			this.view = view;
+			this.urlstr = urlstr;
 		}
 
 		public void run() {
@@ -72,7 +60,7 @@ class NetworkHandlerBase {
 				// InputStream in = new
 				// BufferedInputStream(urlConnection.getInputStream());
 				// readStream(in);
-				update(true);
+				update(true, null);
 			} catch (MalformedURLException e) {
 				update(true, "...bad URL?");
 			} catch (IOException e) {
@@ -84,6 +72,19 @@ class NetworkHandlerBase {
 				e.printStackTrace();
 				update(true, "...unknown exception?");
 			}
+		}
+
+		private void update(final boolean enabled, final String text) {
+			view.post(new Runnable() {
+				@Override
+				public void run() {
+					view.setEnabled(enabled);
+					if (text != null) {
+						Toast.makeText(view.getContext(), text,
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
 		}
 	}
 }

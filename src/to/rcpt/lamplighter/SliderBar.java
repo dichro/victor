@@ -10,7 +10,7 @@ public class SliderBar extends SeekBar {
 	private class Handler extends NetworkHandlerBase implements
 			OnSeekBarChangeListener {
 		Handler(AttributeSet attrs) {
-			super(SliderBar.this, attrs);
+			super(attrs);
 		}
 
 		@Override
@@ -29,13 +29,12 @@ public class SliderBar extends SeekBar {
 		public void onStopTrackingTouch(SeekBar seekBar) {
 			Log.i(getClass().getName(), "onStopTrackingTouch()");
 			setEnabled(false);
-			go((float) getProgress() / (float) getMax());
+			go(SliderBar.this, (float) getProgress() / (float) getMax());
 		}
 	}
 
 	public SliderBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO(dichro): do this properly
 		setOnSeekBarChangeListener(new Handler(attrs));
 	}
 }
