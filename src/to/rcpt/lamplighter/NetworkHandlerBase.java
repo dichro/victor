@@ -32,6 +32,10 @@ class NetworkHandlerBase {
 		new Thread(new Executor(urlBase + arg)).start();
 	}
 
+	protected void go() {
+		new Thread(new Executor(urlBase)).start();
+	}
+
 	private void update(final boolean enabled, final String text) {
 		view.post(new Runnable() {
 			@Override

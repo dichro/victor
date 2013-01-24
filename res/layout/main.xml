@@ -12,10 +12,14 @@
     <to.rcpt.lamplighter.PostingRadioButton android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="On"
+        lamplighter:target="state"
+        lamplighter:arg="1"
         />
     <to.rcpt.lamplighter.PostingRadioButton android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Off"
+        lamplighter:target="state"
+        lamplighter:arg="0"
         />
     </RadioGroup>
     <to.rcpt.lamplighter.PostingButton
