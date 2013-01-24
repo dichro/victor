@@ -6,6 +6,18 @@
     android:id="@+id/top"
     android:orientation="vertical"
     >
+    <RadioGroup android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <RadioButton android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="On"
+        />
+    <RadioButton android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Off"
+        />
+    </RadioGroup>
     <to.rcpt.lamplighter.PostingButton
         android:text="All Off"
         android:layout_width="fill_parent"
