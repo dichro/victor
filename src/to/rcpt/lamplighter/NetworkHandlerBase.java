@@ -36,13 +36,19 @@ class NetworkHandlerBase {
 		new Thread(new Executor(urlBase)).start();
 	}
 
+	private void update(final boolean enabled) {
+		update(enabled, null);
+	}
+
 	private void update(final boolean enabled, final String text) {
 		view.post(new Runnable() {
 			@Override
 			public void run() {
 				view.setEnabled(enabled);
-				Toast.makeText(view.getContext(), text, Toast.LENGTH_SHORT)
-						.show();
+				if (text != null) {
+					Toast.makeText(view.getContext(), text, Toast.LENGTH_SHORT)
+							.show();
+				}
 			}
 		});
 	}
@@ -56,7 +62,6 @@ class NetworkHandlerBase {
 
 		public void run() {
 			try {
-				update(false, "Sending request...");
 				URL url;
 				url = new URL(urlstr);
 				HttpURLConnection urlConnection;
@@ -67,7 +72,7 @@ class NetworkHandlerBase {
 				// InputStream in = new
 				// BufferedInputStream(urlConnection.getInputStream());
 				// readStream(in);
-				update(true, "...OK.");
+				update(true);
 			} catch (MalformedURLException e) {
 				update(true, "...bad URL?");
 			} catch (IOException e) {
