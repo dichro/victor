@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.SeekBar;
 
 public class SliderBar extends SeekBar {
-
 	private class Handler extends NetworkHandlerBase implements
 			OnSeekBarChangeListener {
 		Handler(AttributeSet attrs) {

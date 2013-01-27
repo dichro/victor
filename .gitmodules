@@ -1,0 +1,3 @@
+[submodule "AmbilWarna"]
+	path = AmbilWarna
+	url = https://github.com/attenzione/android-ColorPickerPreference.git
