@@ -27,12 +27,15 @@ public class NetworkHandlerBase {
 		urlBase = sb.toString();
 	}
 
-	protected void go(View view, float arg) {
-		go(view, urlBase + arg);
-	}
-
-	protected void go(View view) {
-		go(view, urlBase);
+	protected void go(View view, float... args) {
+		StringBuilder sb = new StringBuilder();
+		for (float arg : args) {
+			sb.append(',').append(arg);
+		}
+		if (sb.length() > 0) {
+			sb.deleteCharAt(0);
+		}
+		go(view, urlBase + sb.toString());
 	}
 
 	public static void go(View view, String urlstr) {
