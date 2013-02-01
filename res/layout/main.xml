@@ -52,8 +52,9 @@
         android:layout_height="wrap_content"
         lamplighter:target="temperature" />
     
-    <net.margaritov.preference.colorpicker.ColorPickerView
+    <to.rcpt.lamplighter.PostingColourPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-/>
+        lamplighter:target="colour" />
+    
 </LinearLayout>

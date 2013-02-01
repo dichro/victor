@@ -16,7 +16,7 @@ public class NetworkHandlerBase {
 
 	protected NetworkHandlerBase(AttributeSet attrs) {
 		// TODO(dichro): do attribute lookups properly
-		StringBuilder sb = new StringBuilder("http://192.168.1.11:10443/")
+		StringBuilder sb = new StringBuilder("http://192.168.1.9:10443/")
 				.append(attrs.getAttributeValue("http://lamplighter.rcpt.to/",
 						"target")).append("/Living%20Room/");
 		String arg = attrs.getAttributeValue("http://lamplighter.rcpt.to/",
@@ -38,11 +38,15 @@ public class NetworkHandlerBase {
 		go(view, urlBase + sb.toString());
 	}
 
-	public static void go(View view, String urlstr) {
+	protected void gone() {
+
+	}
+
+	public void go(View view, String urlstr) {
 		new Thread(new Executor(view, urlstr)).start();
 	}
 
-	private static class Executor implements Runnable {
+	private class Executor implements Runnable {
 		private final String urlstr;
 		private final View view;
 
@@ -52,6 +56,7 @@ public class NetworkHandlerBase {
 		}
 
 		public void run() {
+			Log.i(getClass().getName(), "requesting " + urlstr);
 			try {
 				URL url;
 				url = new URL(urlstr);
@@ -74,6 +79,8 @@ public class NetworkHandlerBase {
 				Log.i(getClass().getName(), e.getMessage());
 				e.printStackTrace();
 				update(true, "...unknown exception?");
+			} finally {
+				gone();
 			}
 		}
 
