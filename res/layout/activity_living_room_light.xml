@@ -18,7 +18,8 @@
             android:textSize="20pt"
             android:textStyle="bold"
             lamplighter:arg="1"
-            lamplighter:target="state" />
+            lamplighter:name="Living Room"
+            lamplighter:operation="state" />
 
         <to.rcpt.lamplighter.PostingRadioButton
             android:layout_width="wrap_content"
@@ -27,7 +28,8 @@
             android:textSize="20pt"
             android:textStyle="bold"
             lamplighter:arg="0"
-            lamplighter:target="state" />
+            lamplighter:name="Living Room"
+            lamplighter:operation="state" />
     </RadioGroup>
 
     <TextView
@@ -39,7 +41,7 @@
     <to.rcpt.lamplighter.SliderBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        lamplighter:target="brightness" />
+        lamplighter:operation="brightness" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -50,11 +52,13 @@
     <to.rcpt.lamplighter.SliderBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        lamplighter:target="temperature" />
+        lamplighter:name="Living Room"
+        lamplighter:operation="temperature" />
     
     <to.rcpt.lamplighter.PostingColourPicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        lamplighter:target="colour" />
+        lamplighter:name="Living Room"
+        lamplighter:operation="colour" />
     
 </LinearLayout>

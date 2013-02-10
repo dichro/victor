@@ -18,7 +18,10 @@ public class NetworkHandlerBase {
 		// TODO(dichro): do attribute lookups properly
 		StringBuilder sb = new StringBuilder("http://192.168.1.9:10443/")
 				.append(attrs.getAttributeValue("http://lamplighter.rcpt.to/",
-						"target")).append("/Living%20Room/");
+						"operation"))
+				.append("/")
+				.append(attrs.getAttributeValue("http://lamplighter.rcpt.to/",
+						"name")).append("/");
 		String arg = attrs.getAttributeValue("http://lamplighter.rcpt.to/",
 				"arg");
 		if (arg != null) {
