@@ -2,9 +2,11 @@ package to.rcpt.lamplighter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,14 +16,25 @@ import android.widget.Toast;
 public class NetworkHandlerBase {
 	private final String urlBase;
 
+	private String getAttr(AttributeSet attrs, String name) {
+		try {
+			String attr = attrs.getAttributeValue(
+					"http://lamplighter.rcpt.to/", name);
+			if (attr == null) {
+				return name + "=null";
+			}
+			// argh. Why +, why?
+			return URLEncoder.encode(attr, "UTF-8").replace("+", "%20");
+		} catch (UnsupportedEncodingException e) {
+			return "UnsupportedEncodingException";
+		}
+	}
+
 	protected NetworkHandlerBase(AttributeSet attrs) {
 		// TODO(dichro): do attribute lookups properly
 		StringBuilder sb = new StringBuilder("http://192.168.1.9:10443/")
-				.append(attrs.getAttributeValue("http://lamplighter.rcpt.to/",
-						"operation"))
-				.append("/")
-				.append(attrs.getAttributeValue("http://lamplighter.rcpt.to/",
-						"name")).append("/");
+				.append(getAttr(attrs, "operation")).append("/")
+				.append(getAttr(attrs, "name")).append("/");
 		String arg = attrs.getAttributeValue("http://lamplighter.rcpt.to/",
 				"arg");
 		if (arg != null) {

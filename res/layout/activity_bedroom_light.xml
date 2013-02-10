@@ -18,7 +18,7 @@
             android:textSize="20pt"
             android:textStyle="bold"
             lamplighter:arg="1"
-            lamplighter:name="Miki's%20Bedroom"
+            lamplighter:name="Miki's Bedroom"
             lamplighter:operation="state" />
 
         <to.rcpt.lamplighter.PostingRadioButton
@@ -28,7 +28,7 @@
             android:textSize="20pt"
             android:textStyle="bold"
             lamplighter:arg="0"
-            lamplighter:name="Miki's%20Bedroom"
+            lamplighter:name="Miki's Bedroom"
             lamplighter:operation="state" />
     </RadioGroup>
 
