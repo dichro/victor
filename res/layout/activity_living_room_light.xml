@@ -41,6 +41,7 @@
     <to.rcpt.lamplighter.SliderBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        lamplighter:name="Living Room"
         lamplighter:operation="brightness" />
 
     <TextView
