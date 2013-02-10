@@ -1,6 +1,5 @@
 package to.rcpt.lamplighter.miki;
 
-import to.rcpt.lamplighter.R;
 import to.rcpt.lamplighter.SingleLightActivity;
 
 public class LivingRoomActivity extends SingleLightActivity {

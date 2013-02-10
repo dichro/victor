@@ -1,6 +1,6 @@
 package to.rcpt.chronicle;
 
-import to.rcpt.lamplighter.R;
+import to.rcpt.lamplighter.miki.R;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

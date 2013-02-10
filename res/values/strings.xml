@@ -7,5 +7,6 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_single_light">Living Room Light</string>
     <string name="title_activity_bedroom">Bedroom Light</string>
+    <string name="miki_app_name">Sepulchral Light+</string>
 
 </resources>
