@@ -15,12 +15,22 @@
         android:allowBackup="false">
         <activity
             android:name="to.rcpt.lamplighter.miki.LivingRoomActivity"
-            android:label="@string/title_activity_single_light" >
+            android:label="@string/title_activity_single_light"
+            android:taskAffinity="to.rcpt.lamplighter.miki.LivingRoomActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity
+            android:name="to.rcpt.lamplighter.miki.BedroomActivity"
+            android:label="@string/title_activity_bedroom" 
+            android:taskAffinity="to.rcpt.lamplighter.miki.BedroomActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        </application>
 
 </manifest>

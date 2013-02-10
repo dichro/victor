@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lamplighter="http://lamplighter.rcpt.to/"
+    android:id="@+id/top"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <to.rcpt.lamplighter.PostingRadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="On"
+            android:textSize="20pt"
+            android:textStyle="bold"
+            lamplighter:arg="1"
+            lamplighter:target="state" />
+
+        <to.rcpt.lamplighter.PostingRadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Off"
+            android:textSize="20pt"
+            android:textStyle="bold"
+            lamplighter:arg="0"
+            lamplighter:target="state" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Brightness"
+        android:textSize="16pt" />
+
+    <to.rcpt.lamplighter.SliderBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        lamplighter:target="brightness" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Colour Temperature"
+        android:textSize="16pt" />
+
+    <to.rcpt.lamplighter.SliderBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        lamplighter:target="temperature" />
+    
+    <to.rcpt.lamplighter.PostingColourPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        lamplighter:target="colour" />
+    
+</LinearLayout>
